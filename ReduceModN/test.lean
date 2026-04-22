@@ -7,13 +7,13 @@ example : ¬ (∃ (x y : ℤ), x^2 + y^2 = 7) := by
 
 -- Example 2: Testing the configurable maximum (set to 3, so it fails)
 set_option searchModN.max_modulus 3
-example : ¬ (∃ (x y : ℤ), x^2 + y^2 = 7) := by
+example : ¬ (∃ (x y : ℤ), x^2 + y^2 = 3) := by
   -- searchModN will run from 2 to 3, fail at both, and report no solution found.
   searchModN
   -- The goal is left unsolved.
 
 -- Example 3: Testing with a high max modulus (set to 100)
-set_option searchModN.max_modulus 100
+set_option searchModN.max_modulus 50
 example : ¬ (∃ (x y : ℤ), x^2 + y^2 = 7) := by
   -- searchModN will run until 4 and then succeed, despite the max being 100.
   reduceModN 4
@@ -22,6 +22,10 @@ example : ¬ (∃ (x y : ℤ), x^2 + y^2 = 7) := by
 example : ¬ ∃ (x y: ℤ), x^3 + 14*y^3 = 5 := by
   searchModN
 
+-- Example 5: Testing an example with a larger modulus (n = 29)
+example : ¬ (∃ (x y : ℤ), x^4 + y^7 = 43) := by
+  -- searchModN will run from 2 to 3, fail at both, and report no solution found.
+  searchModN
 
-example (A B : Prop) : A ∧ B := by
-  apply And.intro
+
+#check Finsupp

@@ -121,7 +121,7 @@ lemma gcdof2integers_dvd_both :
   ∀ (a b : ℤ), let d := Int.gcd a b
   (d : ℤ) ∣ a ∧ (d : ℤ) ∣ b := by
   intros a b
-  exact ⟨Int.gcd_dvd_left, Int.gcd_dvd_right⟩
+  exact ⟨Int.gcd_dvd_left a b, Int.gcd_dvd_right a b⟩
 
 -- Lemma: gcd3integer divides all three integers a,b,c
 lemma gcd3integer_dvd_all :
@@ -132,23 +132,28 @@ lemma gcd3integer_dvd_all :
   let gab : ℤ := (Int.gcd a b : ℤ)
   let d := gcd3integer a b c
   have hgab_a : gab ∣ a := by
-    simpa [gab] using (Int.gcd_dvd_left : (Int.gcd a b : ℤ) ∣ a)
+    simpa [gab] using Int.gcd_dvd_left a b
   have hgab_b : gab ∣ b := by
-    simpa [gab] using (Int.gcd_dvd_right : (Int.gcd a b : ℤ) ∣ b)
+    simpa [gab] using (Int.gcd_dvd_right a b)
   have hd_gab : d ∣ gab := by
     simpa [d, gab, gcd3integer] using
-      (Int.gcd_dvd_left : (Int.gcd (Int.gcd a b) c : ℤ) ∣ Int.gcd a b)
+      Int.gcd_dvd_left (Int.gcd a b) c
   have hd_c : d ∣ c := by
     simpa [d, gcd3integer] using
-      (Int.gcd_dvd_right : (Int.gcd (Int.gcd a b) c : ℤ) ∣ c)
+      Int.gcd_dvd_right (Int.gcd a b) c
   exact ⟨Int.dvd_trans hd_gab hgab_a, Int.dvd_trans hd_gab hgab_b, hd_c⟩
 
+
+#check Rat.mkRat_pow
 -- Lemma: from a^2 = b^2, we can derive (a/d)^2 = (b/d)^2 where d = gcd(a,b)
 lemma asqeqbsq_implies_abydsqeqbbydsq_wheredisgcd :
   ∀ (a b : ℤ), a^2 = b^2 →
     let d := Int.gcd a b
     (a / d)^2 = (b / d)^2 := by
-  sorry
+      intros a b hab d
+      rw [div_pow a d 2]
+
+      apply congr_arg (fun x => (x / d)^2) h
  -- Lemma: from a solution to a^2 + b^2 = 3 c^2, we can derive a smaller solution
 lemma ifabcsolution_thennewsolutionbydividinggcd3 :
   ∀ (a b c : ℤ), a^2 + b^2 = 3*c^2 →
@@ -164,8 +169,8 @@ lemma dividingby3numbersbygcd_makesprimitive :
     ∀ (a b c : ℤ),
       let d := gcd3integer a b c
       ¬ ∃ k : ℤ, k > 1 ∧ k ∣ (a / d) ∧ k ∣ (b / d) ∧ k ∣ (c / d) := by
-    intros a b c
-    let d := gcd3integer a b c
+    rintro a b c d ⟨k, hk⟩
+    rcases hk with ⟨hk₁, hk₂, hk₃, hk₄⟩
     sorry
 
 
