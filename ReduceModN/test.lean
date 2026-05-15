@@ -1,31 +1,41 @@
 import ReduceModN.Basic
 
--- Example 1: Basic success case (n=4)
 example : ¬ (∃ (x y : ℤ), x^2 + y^2 = 7) := by
-  -- searchModN will run from 2 to 50, fail at 2, 3, succeed at 4, and stop.
   reduceModN 4
 
--- Example 2: Testing the configurable maximum (set to 3, so it fails)
-set_option searchModN.max_modulus 3
-example : ¬ (∃ (x y : ℤ), x^2 + y^2 = 3) := by
-  -- searchModN will run from 2 to 3, fail at both, and report no solution found.
-  searchModN
-  -- The goal is left unsolved.
-
--- Example 3: Testing with a high max modulus (set to 100)
 set_option searchModN.max_modulus 50
 example : ¬ (∃ (x y : ℤ), x^2 + y^2 = 7) := by
-  -- searchModN will run until 4 and then succeed, despite the max being 100.
-  reduceModN 4
+  searchModN
 
--- Example 4: Testing another basic Success case (n = 7)
+/--
+error: searchModN failed to find a working modulus between 2 and 3. The max_modulus for this tactic was set to 3. You can change this using 'set_option searchModN.max_modulus'.
+---
+error: unsolved goals
+⊢ ¬∃ x y, x ^ 2 + y ^ 2 = 7
+-/
+#guard_msgs in
+example : ¬ (∃ (x y : ℤ), x^2 + y^2 = 7) := by
+  set_option searchModN.max_modulus 3 in
+  searchModN
+
 example : ¬ ∃ (x y: ℤ), x^3 + 14*y^3 = 5 := by
   searchModN
 
--- Example 5: Testing an example with a larger modulus (n = 29)
 example : ¬ (∃ (x y : ℤ), x^4 + y^7 = 43) := by
-  -- searchModN will run from 2 to 3, fail at both, and report no solution found.
   searchModN
 
+/--
+error: searchModN failed to find a working modulus between 2 and 50. The max_modulus for this tactic was set to 50. You can change this using 'set_option searchModN.max_modulus'.
+---
+error: unsolved goals
+⊢ ¬∃ x y, x ^ 2 + y ^ 2 = 176
+-/
+#guard_msgs in
+example : ¬ ∃ x y : ℤ, x^2 + y^2 = 176 := by
+  searchModN
 
-#check Finsupp
+set_option searchModN.max_modulus 64 in
+-- Searching up to `64` needs a higher recursion limit than Lean's default.
+set_option maxRecDepth 10000 in
+example : ¬ ∃ x y : ℤ, x^2 + y^2 = 176 := by
+  searchModN
