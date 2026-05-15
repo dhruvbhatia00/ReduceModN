@@ -47,6 +47,3 @@ example : ¬ ∃ x y : ℤ, x^3 + 14 * y^3 = 5 := by
 
 The maximum modulus checked by `searchModN` is controlled by the option
 `searchModN.max_modulus`, which defaults to `50`.
-
-If a mathlib PR based on this project is accepted, the README can be updated to
-reflect that later.
